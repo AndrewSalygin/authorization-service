@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    url: jdbc:${DB_TYPE:postgresql}://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:auth}
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+
+secrets:
+  jwt-secret: ${JWT_SECRET:secret}
+  salt: ${SALT:salted_salt}
+
+security:
+  access-token:
+    expirationMillis: ${ACCESS_TOKEN_EXPIRATION:86400000}
+  refresh-token:
+    expirationMillis: ${REFRESH_TOKEN_EXPIRATION:1209600000}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui

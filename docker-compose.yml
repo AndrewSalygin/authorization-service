@@ -1,0 +1,31 @@
+version: '3.9'
+services:
+  postgres:
+    image: postgres:16.3-alpine
+    container_name: postgres_container
+    environment:
+      POSTGRES_USER: "${DB_USERNAME:-auth_user}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD:-password}"
+      POSTGRES_DB: "${DB_NAME:-auth}"
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    container_name: auth_app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres_container:5432/${DB_NAME:-auth}"
+      SPRING_DATASOURCE_USERNAME: "${DB_USERNAME:-auth_user}"
+      SPRING_DATASOURCE_PASSWORD: "${DB_PASSWORD:-password}"
+      SPRING_JPA_HIBERNATE_DDL_AUTO: "update"
+      SECURITY_JWT_SALT: "${JWT_SECRET:-your_secret}"
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    depends_on:
+      - postgres
+volumes:
+  postgres_data:
